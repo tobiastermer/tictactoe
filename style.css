@@ -1,0 +1,184 @@
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Roboto', sans-serif;
+    overflow: hidden;
+}
+
+h1 {
+    position: absolute;
+    top: 16px;
+}
+
+.player-panel {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+    font-size: 24px;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.player-panel div {
+    display: flex;
+    align-items: center;
+    margin-left: 16px;
+    margin-right: 16px;
+    gap: 16px;
+}
+
+.player-panel img {
+    height: 64px;
+}
+
+.player-inactive {
+    opacity: 0.5;
+}
+
+.p-relative {
+    position: relative;
+}
+
+table {
+    border-collapse: collapse;
+    width: 95%;
+    max-width: 500px;
+    margin: 0 auto;
+    table-layout: fixed;
+}
+
+table td {
+    padding: 0;
+    width: 33.33%;
+    border: 5px solid black;
+    position: relative;
+}
+
+table td:before {
+    content: "";
+    display: block;
+    padding-top: 100%;
+}
+
+table td .content {
+    aspect-ratio: 1 / 1;
+    background: gold;
+}
+
+table td:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+table tr:first-child td {
+    border-top: 0;
+}
+
+table tr td:first-child {
+    border-left: 0;
+}
+
+table tr:last-child td {
+    border-bottom: 0;
+}
+
+table tr td:last-child {
+    border-right: 0;
+}
+
+.shape {
+    position: absolute;
+    height: 60%;
+    width: 60%;
+    top: 20%;
+    left: 20%;
+}
+
+.d-none {
+    display: none;
+}
+
+.horizontal-line {
+    position: absolute;
+    left: 17%;
+    width: 66%;
+    height: 10px;
+    background-color: grey;
+    transform: scale(0.0);
+    transition: transform 225ms ease-in-out;
+    z-index: 1;
+}
+
+.make-vertical {
+    transform: rotate(90deg) scale(0.0);
+    top: 49%;
+}
+
+#game-over {
+    position: absolute;
+    right: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+    animation: zoomIn 225ms ease-in-out;
+}
+
+.btn-restart {
+    position: absolute;
+    bottom: 60px;
+    height: 64px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    background-color: rgb(28, 11, 127);
+    z-index: 2;
+    width: 300px;
+    color: white;
+    font-size: 38px;
+}
+
+.btn-restart:hover {
+    background-color: rgb(59, 40, 168);
+    cursor: pointer;
+}
+
+.btn {
+    font-size: 24px !important;
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: sacleX(0);
+    }
+
+    to {
+        opacity: 1;
+        transform: sacleX(1);
+    }
+}
+
+@media (max-width: 550px) {
+
+    .player-panel {
+        font-size: 18px;
+    }
+
+    .player-panel div {
+        margin-left: 8px;
+        margin-right: 8px;
+        gap: 8px;
+    }
+
+    .player-panel img {
+        height: 48px;
+    }
+
+    .btn {
+        font-size: 18px !important;
+    }
+    
+}
