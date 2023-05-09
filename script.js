@@ -6,6 +6,16 @@ let winner;
 let gameOver = false;
 let player2 = 'human';
 let numberOfMoves = 0;
+let checkFields = [
+    { "row1": [0, 1, 2] },
+    { "row2": [3, 4, 5] },
+    { "row3": [6, 7, 8] },
+    { "row4": [0, 3, 6] },
+    { "row5": [1, 4, 7] },
+    { "row6": [2, 5, 8] },
+    { "row7": [0, 4, 8] },
+    { "row8": [2, 4, 6] }
+];
 
 function fillShape(id) {
     if (!fields[id] && !gameOver) {
@@ -48,7 +58,7 @@ function checkForComputerAsPlayer2() {
 
 function playComputer() {
     // Strategie: 1. Eigenen Sieg herbeiführen oder gegnerischen verhindern, 2. in die Mitte, 3. Zufall
-    let strategies = [playComputerStrategy1, playComputerStrategy2, playComputerStrategy3];
+    let strategies = [playComputerStrategyWinNotLoose, playComputerStrategyMiddle, playComputerStrategyRandom];
     getEmptyFields();
     let selectedField = '';
 
@@ -65,69 +75,53 @@ function playComputer() {
     }, 1000);
 }
 
-function playComputerStrategy1() {
+function playComputerStrategyWinNotLoose() {
     // Eigenen Sieg herbeiführen oder gegnerischen Sieg verhindern
     // zunächst Player 2 (Computer), dann Player 1 prüfen
     for (i = 2; i >= 1; i--) {
-        if (fields[0] == i && fields[1] == i && !fields[2]) {
-            return 2;
-        } else if (fields[1] == i && fields[2] == i && !fields[0]) {
-            return 0;
-        } else if (fields[2] == i && fields[0] == i && !fields[1]) {
-            return 1;
-        } else if (fields[3] == i && fields[4] == i && !fields[5]) {
-            return 5;
-        } else if (fields[4] == i && fields[5] == i && !fields[3]) {
-            return 3;
-        } else if (fields[5] == i && fields[3] == i && !fields[4]) {
-            return 4;
-        } else if (fields[6] == i && fields[7] == i && !fields[8]) {
-            return 8;
-        } else if (fields[7] == i && fields[8] == i && !fields[6]) {
-            return 6;
-        } else if (fields[8] == i && fields[6] == i && !fields[7]) {
-            return 7;
-        } else if (fields[0] == i && fields[3] == i && !fields[6]) {
-            return 6;
-        } else if (fields[3] == i && fields[6] == i && !fields[0]) {
-            return 0;
-        } else if (fields[6] == i && fields[0] == i && !fields[3]) {
-            return 3;
-        } else if (fields[1] == i && fields[4] == i && !fields[7]) {
-            return 7;
-        } else if (fields[4] == i && fields[7] == i && !fields[1]) {
-            return 1;
-        } else if (fields[7] == i && fields[1] == i && !fields[4]) {
-            return 4;
-        } else if (fields[2] == i && fields[5] == i && !fields[8]) {
-            return 8;
-        } else if (fields[5] == i && fields[8] == i && !fields[2]) {
-            return 2;
-        } else if (fields[8] == i && fields[2] == i && !fields[5]) {
-            return 5;
-        } else if (fields[0] == i && fields[4] == i && !fields[8]) {
-            return 8;
-        } else if (fields[4] == i && fields[8] == i && !fields[0]) {
-            return 0;
-        } else if (fields[8] == i && fields[0] == i && !fields[4]) {
-            return 4;
-        } else if (fields[2] == i && fields[4] == i && !fields[6]) {
-            return 6;
-        } else if (fields[4] == i && fields[6] == i && !fields[2]) {
-            return 2;
-        } else if (fields[6] == i && fields[2] == i && !fields[4]) {
-            return 4;
-        };
+        let fieldIndex;
+        fieldIndex = checkAllRowsForWin(i);
+        if (fieldIndex >= 0) {
+            return fieldIndex;
+        }
     }
+    return -1;
 }
 
-function playComputerStrategy2() {
+function checkAllRowsForWin(player) {
+    let fieldIndex;
+    for (let i = 0; i < checkFields.length; i++) {
+        const rowName = Object.keys(checkFields[i])[0];
+        const rowValues = checkFields[i][rowName];
+        const field1 = rowValues[0];
+        const field2 = rowValues[1];
+        const field3 = rowValues[2];
+        fieldIndex = checkRowForWin(player, field1, field2, field3);
+        if (fieldIndex >= 0) {
+            return fieldIndex;
+        }
+    }
+    return -1;
+}
+
+function checkRowForWin(player, index1, index2, index3) {
+    if (fields[index1] == player && fields[index2] == player && !fields[index3]) {
+        return index3;
+    } else if (fields[index2] == player && fields[index3] == player && !fields[index1]) {
+        return index1;
+    } else if (fields[index3] == player && fields[index1] == player && !fields[index2]) {
+        return index2;
+    }
+    return -1;
+}
+
+function playComputerStrategyMiddle() {
     if (!fields[4]) {
         return 4;
     }
 }
 
-function playComputerStrategy3() {
+function playComputerStrategyRandom() {
     let randomField = emptyFields[Math.floor(Math.random() * emptyFields.length)];
     return randomField;
 }
