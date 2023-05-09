@@ -19,37 +19,27 @@ function fillShape(id) {
 }
 
 function checkForWin() {
-    if (fields[0] == fields[1] && fields[1] == fields[2] && fields[0]) {
-        winner = fields[0];
-        document.getElementById('line1').style.transform = 'scaleX(1)';
-    } else if (fields[3] == fields[4] && fields[4] == fields[5] && fields[3]) {
-        winner = fields[3];
-        document.getElementById('line2').style.transform = 'scaleX(1)';
-    } else if (fields[6] == fields[7] && fields[7] == fields[8] && fields[6]) {
-        winner = fields[6];
-        document.getElementById('line3').style.transform = 'scaleX(1)';
-    } else if (fields[0] == fields[3] && fields[3] == fields[6] && fields[0]) {
-        winner = fields[0];
-        document.getElementById('line4').style.transform = 'rotate(90deg) scaleX(1)';
-    } else if (fields[1] == fields[4] && fields[4] == fields[7] && fields[1]) {
-        winner = fields[1];
-        document.getElementById('line5').style.transform = 'rotate(90deg) scaleX(1)';
-    } else if (fields[2] == fields[5] && fields[5] == fields[8] && fields[2]) {
-        winner = fields[2];
-        document.getElementById('line6').style.transform = 'rotate(90deg) scaleX(1)';
-    } else if (fields[0] == fields[4] && fields[4] == fields[8] && fields[0]) {
-        winner = fields[0];
-        document.getElementById('line7').style.transform = 'rotate(45deg) scaleX(1)';
-    } else if (fields[2] == fields[4] && fields[4] == fields[6] && fields[2]) {
-        winner = fields[2];
-        document.getElementById('line8').style.transform = 'rotate(-45deg) scaleX(1)';
-    }
-
+    checkWinner(fields[0], fields[1], fields[2], 'line1', 'scaleX(1)');
+    checkWinner(fields[3], fields[4], fields[5], 'line2', 'scaleX(1)');
+    checkWinner(fields[6], fields[7], fields[8], 'line3', 'scaleX(1)');
+    checkWinner(fields[0], fields[3], fields[6], 'line4', 'rotate(90deg) scaleX(1)');
+    checkWinner(fields[1], fields[4], fields[7], 'line5', 'rotate(90deg) scaleX(1)');
+    checkWinner(fields[2], fields[5], fields[8], 'line6', 'rotate(90deg) scaleX(1)');
+    checkWinner(fields[0], fields[4], fields[8], 'line7', 'rotate(45deg) scaleX(1)');
+    checkWinner(fields[2], fields[4], fields[6], 'line8', 'rotate(-45deg) scaleX(1)');
     if (winner || numberOfMoves == 9) {
         finishGame();
     }
 }
 
+function checkWinner(field1, field2, field3, lineId, transform) {
+    if (field1 && field1 === field2 && field2 === field3) {
+        winner = field1;
+        document.getElementById(lineId).style.transform = transform;
+        return true;
+    }
+    return false;
+}
 function checkForComputerAsPlayer2() {
     if (player2 == 'computer' && currentPlayer == 2) {
         playComputer();
@@ -58,23 +48,21 @@ function checkForComputerAsPlayer2() {
 
 function playComputer() {
     // Strategie: 1. Eigenen Sieg herbeiführen oder gegnerischen verhindern, 2. in die Mitte, 3. Zufall
+    let strategies = [playComputerStrategy1, playComputerStrategy2, playComputerStrategy3];
     getEmptyFields();
     let selectedField = '';
 
-    let FieldFromFirstStrategy = playComputerStrategy1();
-    let FieldFromSecondStrategy = playComputerStrategy2();
-    let FieldFromThirdStrategy = playComputerStrategy3();
-
-    if (FieldFromFirstStrategy >= 0) {
-        selectedField = FieldFromFirstStrategy;
-    } else if (FieldFromSecondStrategy >= 0) {
-        selectedField = FieldFromSecondStrategy;
-    } else if (FieldFromThirdStrategy >= 0) {
-        selectedField = FieldFromThirdStrategy;
+    for (let strategy of strategies) {
+        let field = strategy();
+        if (field >= 0) {
+            selectedField = field;
+            break;
+        }
     }
-    setTimeout(function () {
+
+    setTimeout(() => {
         fillShape(selectedField);
-    }, 1000)
+    }, 1000);
 }
 
 function playComputerStrategy1() {
